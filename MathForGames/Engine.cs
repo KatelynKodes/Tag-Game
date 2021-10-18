@@ -13,7 +13,6 @@ namespace MathForGames
         public static bool _applicationShouldClose = false;
         private static int _currentSceneIndex = 0;
         private static Scene[] _scenes = new Scene[0];
-        private static string _winnerName = "";
         private Stopwatch _stopwatch = new Stopwatch();
 
         /// <summary>
@@ -29,17 +28,16 @@ namespace MathForGames
             float deltaTime = 0;
 
             //Loop until application is told to close
-            while (!Raylib.WindowShouldClose())
+            while (!Raylib.WindowShouldClose() && !_applicationShouldClose)
             {
                 //Get how much time has passed since the application started
-                currTime = _stopwatch.ElapsedMilliseconds / 1000;
+                currTime = _stopwatch.ElapsedMilliseconds / 1000.0f;
 
                 //Set deltatime to be the difference in time from the last time recorded to the current time recorded
                 deltaTime = currTime - lastTime;
 
                 Update(deltaTime);
                 Draw();
-                Thread.Sleep(150);
 
                 //Set the last time recorded to be the current time
                 lastTime = currTime;
@@ -58,7 +56,20 @@ namespace MathForGames
 
             //Create Window using raylib
             Raylib.InitWindow(800, 450, "MathForgames");
+            Raylib.SetTargetFPS(0);
 
+            //TagScene
+            Scene TagScene = new Scene();
+
+            //Actors
+            Player Player = new Player('@', 40, 0, 50, Color.SKYBLUE, "Player");
+            Chaser Chaser = new Chaser('C', 0, 0, 30, Color.PINK, "Chaser", Player);
+
+            //Add actors to the scene
+            TagScene.AddActor(Player);
+            TagScene.AddActor(Chaser);
+
+            _scenes = new Scene[]{ TagScene };
             //Starts the current scene
             _scenes[_currentSceneIndex].Start();
         }
@@ -84,7 +95,7 @@ namespace MathForGames
             _scenes[_currentSceneIndex].End();
             Raylib.CloseWindow();
             Console.Clear();
-            Console.WriteLine(_winnerName + "Is the winner of the race");
+            Console.WriteLine("The Player was caught");
             Console.ReadKey(true);
         }
 
@@ -150,24 +161,6 @@ namespace MathForGames
         public static void CloseApplication()
         {
             _applicationShouldClose = true;
-        }
-
-        public static void ChangeWinnerName(string newName)
-        {
-            _winnerName = newName;
-        }
-
-        /// <summary>
-        /// Knocks an opposing actor back a space if the player collides with it
-        /// </summary>
-        /// <param name="opponent"></param>
-        public static void KnockOpponentBack(Actor opponent)
-        {
-            //How much actor is knocked back
-            Vector2 KnockbackValue = new Vector2 { X = 1, Y = 0 };
-
-            //Subtract the current position by that knockback value
-            opponent.GetPosition -= KnockbackValue;
         }
     }
 }
