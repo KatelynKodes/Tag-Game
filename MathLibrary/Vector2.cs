@@ -115,5 +115,25 @@ namespace MathLibrary
             }
             return this / Magnitude;
         }
+
+
+        /// <param name="lhs"> The left hand side</param>
+        /// <param name="rhs"> The right hand side</param>
+        /// <returns> The dot product of the first vector2 on to the second </returns>
+        public static float DotProduct(Vector2 lhs, Vector2 rhs)
+        {
+            return (lhs.X * rhs.X) + (lhs.Y * rhs.Y);
+        }
+
+        /// <summary>
+        /// Finds the distance from one vector to the second
+        /// </summary>
+        /// <param name="lhs"> The starting point</param>
+        /// <param name="rhs"> The ending point</param>
+        /// <returns> A scaler representing the distance</returns>
+        public static float Distance(Vector2 lhs, Vector2 rhs)
+        {
+            return (rhs - lhs).Magnitude;
+        }
     }
 }
