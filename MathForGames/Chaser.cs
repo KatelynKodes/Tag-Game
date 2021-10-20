@@ -12,6 +12,7 @@ namespace MathForGames
         private Vector2 _velocity;
         private Actor _chasee;
         private Vector2 _forwardDir = new Vector2(1,0);
+        private float _maxViewingAngle;
 
         public float Speed
         {
@@ -31,9 +32,10 @@ namespace MathForGames
             set { _forwardDir = value; }
         }
 
-        public Chaser(char icon, float x, float y, float speed, Color IconColor, string name, Actor Chasee) : 
+        public Chaser(char icon, float x, float y, float speed, Color IconColor, string name, float MaxAngle, Actor Chasee) : 
             base(icon, x, y, IconColor, name)
         {
+            _maxViewingAngle = MaxAngle;
             _speed = speed;
             _chasee = Chasee;
         }
@@ -45,7 +47,7 @@ namespace MathForGames
         public override void Update(float deltaTime)
         {
             //Finds the intended direction
-            Vector2 IntendedDirection = _chasee.GetPosition - this.GetPosition;
+            Vector2 IntendedDirection = _chasee.GetPosition - GetPosition;
 
             //Normalizes the intended direction and multiplies it by speed and time
             Velocity = IntendedDirection.Normalized * Speed * deltaTime;
@@ -53,7 +55,7 @@ namespace MathForGames
             if (GetTargetInSight())
             {
                 //Adds the velocity to the position
-                this.GetPosition += Velocity;
+                GetPosition += Velocity;
             }
         }
 
@@ -64,10 +66,11 @@ namespace MathForGames
         /// less than or equal to a specified distance</returns>
         public bool GetTargetInSight()
         {
-            Vector2 TargetDir = (_chasee.GetPosition - this.GetPosition).Normalized;
-            float Angle = MathF.Acos(Vector2.DotProduct(TargetDir, ForwardDir));
+            Vector2 TargetDir = (_chasee.GetPosition - GetPosition).Normalized;
+            float DotProduct = Vector2.DotProduct(TargetDir, ForwardDir);
+            float Angle = MathF.Acos(DotProduct);
             float Distance = Vector2.Distance(GetPosition, _chasee.GetPosition);
-            return Vector2.DotProduct(TargetDir, ForwardDir) > 0 && Angle < 1 && Distance <= 150f;
+            return Angle < _maxViewingAngle && Distance <= 150f;
         }
 
     }

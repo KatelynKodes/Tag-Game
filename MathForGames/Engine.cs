@@ -62,8 +62,13 @@ namespace MathForGames
             Scene TagScene = new Scene();
 
             //Actors
-            Player Player = new Player('@', 40, 0, 50, Color.SKYBLUE, "Player");
-            Chaser Chaser = new Chaser('C', 0, 0, 30, Color.PINK, "Chaser", Player);
+            Player Player = new Player('@', 70, 0, 50, Color.SKYBLUE, "Player");
+            Player.CollisionRadius = 20;
+            Chaser Chaser = new Chaser('C', 0, 0, 30, Color.PINK, "Chaser", 3, Player);
+            Chaser.CollisionRadius = 20;
+
+            //UI
+            UIText text = new UIText(10, 10, "TestTextBox", Color.GREEN, 70, 70, 15, "This is text dialogue");
 
             //Add actors to the scene
             TagScene.AddActor(Player);
